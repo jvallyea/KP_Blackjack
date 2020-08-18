@@ -88,7 +88,7 @@ def pre_update(your_hand, dealer_hand):
         hand1 += " "
     hand2 += str(dealer_hand[0])
     hand2 += " []"
-    print hand1 + hand2
+    print(hand1 + hand2)
 
 # Updates print statments for your hand and dealers hand
 def post_update(your_hand, dealer_hand):
@@ -100,10 +100,10 @@ def post_update(your_hand, dealer_hand):
     for card in dealer_hand:
         hand2 += str(card)
         hand2 += " "
-    print hand1 + hand2
+    print(hand1 + hand2)
 
 # Calculates how the dealer should play their hand
-def dealer_math(your_hand, dealer_hand):
+def dealer_math(your_hand, dealer_hand, deck):
     while True:
         if check_hand(dealer_hand) > check_hand(your_hand):
             post_update(your_hand, dealer_hand)
@@ -118,53 +118,58 @@ def calculate(your_hand, dealer_hand):
     if has_ace(dealer_hand) == True and check_hand_ace(dealer_hand) <= 21:
         dealer_hand = replace_ace(dealer_hand)
     if check_hand(dealer_hand) > 21:
-        print "Dealer busted. You win! "
+        print("Dealer busted. You win! ")
         return -1
     elif check_hand(dealer_hand) > check_hand(your_hand):
-        print "Dealer wins. "
+        print("Dealer wins. ")
         return 1
     elif check_hand(your_hand) > check_hand(dealer_hand):
-        print "You win!"
+        print("You win!")
         return -1
     elif check_hand(your_hand) == check_hand(your_hand):
-        print "It's a tie."
+        print("It's a tie.")
         return 0
     else:
-        print "Error: Returning to deal screen. "
+        print("Error: Returning to deal screen. ")
 
 # Code to execute the game on a while True loop. To exit, type exit.
-while True:
-    print "Welcome to the new game of blackjack!"
-    deck = new_deck()
-    count = 0
-    dealer = 0
-    while count < 10:
-        text = raw_input("Please type 'deal' to play, 'exit' to quit:  ")
-        if text == 'deal':
-            your_hand, dealer_hand, deck = deal(deck)
-            while check_hand(your_hand) <= 21:
-                pre_update(your_hand, dealer_hand)
-                text = raw_input("Please type 'hit' or 'stay'.  ")
-                if text == 'hit':
-                    deck, your_hand = hit(deck, your_hand)
-                    if check_hand(your_hand) > 21:
-                        pre_update(your_hand, dealer_hand)
-                        print "I'm sorry. You busted.  "
+# This code executes on a PvP basis
+def main():
+    while True:
+        print("Welcome to the new game of blackjack!")
+        deck = new_deck()
+        count = 0
+        dealer = 0
+        while count < 10:
+            text = input("Please type 'deal' to play, 'exit' to quit:  ")
+            if text == 'deal':
+                your_hand, dealer_hand, deck = deal(deck)
+                while check_hand(your_hand) <= 21:
+                    pre_update(your_hand, dealer_hand)
+                    text = input("Please type 'hit' or 'stay'.  ")
+                    if text == 'hit':
+                        deck, your_hand = hit(deck, your_hand)
+                        if check_hand(your_hand) > 21:
+                            pre_update(your_hand, dealer_hand)
+                            print("I'm sorry. You busted. ")
+                            count += 1
+                            dealer += 1
+                            break
+                    if text == 'stay':
+                        dealer_math(your_hand, dealer_hand, deck)
+                        dealer += calculate(your_hand, dealer_hand)
                         count += 1
-                        dealer += 1
                         break
-                if text == 'stay':
-                    dealer_math(your_hand, dealer_hand)
-                    dealer += calculate(your_hand, dealer_hand)
-                    count += 1
-                    break
-        elif text == 'exit':
-            exit()
-        else:
-            print "I'm sorry, I didn't get that."
-    if dealer > 0:
-        print "I'm sorry. The dealer won this game. Play again?"
-    if dealer == 0:
-        print "This game was a tie. Play again?"
-    if dealer < 0:
-        print "Congratulations! You won this game. Play again?"
+            elif text == 'exit':
+                exit()
+            else:
+                print("I'm sorry, I didn't get that. ")
+        if dealer > 0:
+            print("I'm sorry. The dealer won this game. Play again?")
+        if dealer == 0:
+            print("This game was a tie. Play again?")
+        if dealer < 0:
+            print("Congratulations! You won this game. Play again?")
+
+# Main method in file
+if __name__ == "__main__": main()
